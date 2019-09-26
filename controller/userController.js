@@ -1,9 +1,44 @@
 const User = require('../models/User'); 
 const bcrypt = require('bcryptjs'); 
+const jwt = require('jsonwebtoken'); 
 
 const login = (req, res) => {
+    // get data 
+    // check username available or not
+    // compare with hash password using bcryptjs 
+    // create token 
 
-}
+    let { username, password } = req.body; 
+    User.findOne({username}) 
+        .then(user => { 
+            if(user.length === 0) {
+                return res.json({
+                    message: 'Incorrect Username'
+                }) 
+            } 
+            
+            bcrypt.compare(password, user.password, (err, result) => { 
+                if(err) { 
+                    return res.json({ message: 'Server Error' })
+                } 
+                if(!result) { 
+                    return res.json({ 
+                        message: 'Wrong Password'
+                    }) 
+                } 
+                const payload = { 
+                    id: user._id, 
+                    username 
+                } 
+                const token = jwt.sign(payload, 'SECRET', { expiresIn: '2h' }) 
+
+                return res.json({ 
+                    message: 'Login successful', 
+                    token: `Bearer ${token}` 
+                }) 
+            }) 
+        }) 
+} 
 
 
 const registration = (req, res) => {
@@ -58,5 +93,5 @@ const registration = (req, res) => {
 
 module.exports = {
     registration, 
-    login
-}
+    login 
+} 
