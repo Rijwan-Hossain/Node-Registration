@@ -7,6 +7,7 @@ const login = (req, res) => {
     // check username available or not
     // compare with hash password using bcryptjs 
     // create token 
+    // return token 
 
     let { username, password } = req.body; 
     User.findOne({username}) 
@@ -46,7 +47,8 @@ const registration = (req, res) => {
     // check duplicate username 
     // hash password using bcryptjs 
     // save data
-    // return info 
+    // create token
+    // return token
 
     let { username, password } = req.body;
     User.find({ username }) 
@@ -69,9 +71,15 @@ const registration = (req, res) => {
 
                     newUser.save() 
                         .then(user => { 
-                            res.json({ 
+                            const payload = { 
+                                id: user._id, 
+                                username 
+                            } 
+                            const token = jwt.sign(payload, 'SECRET', { expiresIn: '2h' }) 
+            
+                            return res.json({ 
                                 message: 'Signup successful', 
-                                account: user 
+                                token: `Bearer ${token}` 
                             }) 
                         }) 
                         .catch(err => { 
