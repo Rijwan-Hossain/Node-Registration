@@ -1,8 +1,8 @@
 const mongoose = require('mongoose'); 
 const Schema = mongoose.Schema; 
 
-const movieSchema = new Schema({
-    title: {
+const movieSchema = new Schema({ 
+    title: { 
         type: String, 
         required: true, 
         maxlength: 100, 
@@ -11,7 +11,10 @@ const movieSchema = new Schema({
     year: { 
         type: Date, 
         required: true 
-    } 
+    }, 
+    rating: String, 
+
+    
 }) 
 
 const Movie = new mongoose.model('Movie', movieSchema); 
